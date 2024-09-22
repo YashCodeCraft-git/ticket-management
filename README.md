@@ -1,22 +1,22 @@
-Ticket Management System
+# Ticket Management System
 
-A simple Node.js and MongoDB-based ticket management system that allows users to ( CRUD Operations )create, update, retrieve, and delete tickets.
+    A simple Node.js and MongoDB-based ticket management system that allows users to ( CRUD Operations )create, update, retrieve, and delete tickets.
 
-Table of Contents :
+### Table of Contents :
 
-Introduction
-Features
-Technologies Used
-Setup Instructions
-API Endpoints
-    Create a Ticket
-    Get All Tickets
-    Get a Ticket by ID
-    Update a Ticket
-    Delete a Ticket
-Error Handling
-Validation
-License
+- Introduction
+- Features
+- Technologies Used
+- Setup Instructions
+- API Endpoints
+   - Create a Ticket
+   - Get All Tickets
+   - Get a Ticket by ID
+   - Update a Ticket
+   - Delete a Ticket
+- Error Handling
+- Validation
+- License
 
 Introduction :
 
