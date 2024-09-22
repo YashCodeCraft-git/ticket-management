@@ -1,56 +1,61 @@
 const express = require('express');
-const Ticket = require('../models/Ticket');
 const router = express.Router();
+const Ticket = require('../models/Ticket'); // Adjust path as necessary
 
-// CREATE a new ticket
+// Validation function
+const validateTicket = (ticket) => {
+    const errors = [];
+    if (!ticket.title || typeof ticket.title !== 'string') {
+        errors.push('Title is required and must be a string.');
+    }
+    if (!ticket.description || typeof ticket.description !== 'string') {
+        errors.push('Description is required and must be a string.');
+    }
+    if (!ticket.status || !['open', 'closed'].includes(ticket.status)) {
+        errors.push('Status must be either "open" or "closed".');
+    }
+    return errors;
+};
+
+// Create a new ticket
 router.post('/', async (req, res) => {
+    const ticket = req.body;
+    const validationErrors = validateTicket(ticket);
+    
+    if (validationErrors.length > 0) {
+        return res.status(400).json({ message: validationErrors });
+    }
+
+    // Proceed to save the ticket to the database
     try {
-        const ticket = new Ticket(req.body);  // Create ticket
-        await ticket.save();  // Save to DB
-        res.status(201).json(ticket);  // Send back created ticket
+        const newTicket = await Ticket.create(ticket);
+        res.status(201).json(newTicket);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(500).json({ message: 'Error creating ticket', error });
     }
 });
 
-// GET all tickets
-router.get('/', async (req, res) => {
-    const tickets = await Ticket.find();  // Get all tickets
-    res.status(200).json(tickets);
-});
-
-// GET a ticket by ID
-router.get('/:id', async (req, res) => {
-    try {
-        const ticket = await Ticket.findById(req.params.id);
-        res.status(200).json(ticket);
-    } catch {
-        res.status(404).json({ message: "Ticket not found" });
-    }
-});
-
-// UPDATE a ticket by ID
+// Update a ticket
 router.put('/:id', async (req, res) => {
+    const ticketId = req.params.id;
+    const ticket = req.body;
+    const validationErrors = validateTicket(ticket);
+    
+    if (validationErrors.length > 0) {
+        return res.status(400).json({ message: validationErrors });
+    }
+
+    
     try {
-        const ticket = await Ticket.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        res.status(200).json(ticket);
-    } catch {
-        res.status(400).json({ message: "Failed to update" });
+        const updatedTicket = await Ticket.findByIdAndUpdate(ticketId, ticket, { new: true });
+        if (!updatedTicket) {
+            return res.status(404).json({ message: 'Ticket not found' });
+        }
+        res.json(updatedTicket);
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating ticket', error });
     }
 });
 
-// DELETE a ticket by ID
-router.delete('/:id', async (req, res) => {
-    await Ticket.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: "Ticket deleted" });
-});
 
 module.exports = router;
-
-
-// This code creates CRUD routes:
-// POST / for creating tickets.
-// GET / for getting all tickets.
-// GET /:id for getting a ticket by its ID.
-// PUT /:id for updating a ticket.
-// DELETE /:id for deleting a ticket.

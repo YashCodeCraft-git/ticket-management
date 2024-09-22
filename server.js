@@ -4,13 +4,13 @@ const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const ticketRoutes = require('./routes/ticketRoutes');
 
-dotenv.config();  // Load environment variables
-connectDB();  // Connect to MongoDB
+dotenv.config();  
+connectDB();  
 
 const app = express();
-app.use(bodyParser.json());  // Parse incoming requests
+app.use(bodyParser.json());  
 
-app.use('/api/tickets', ticketRoutes);  // Use ticket routes
+app.use('/api/tickets', ticketRoutes);  
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
